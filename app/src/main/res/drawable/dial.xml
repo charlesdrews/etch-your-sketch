@@ -1,0 +1,18 @@
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportHeight="100"
+    android:viewportWidth="100">
+
+    <path
+        android:fillColor="@color/dialBackground"
+        android:pathData="
+                    M50,1
+                    a49,49 0 1,1 -0.1,0
+                    z
+                    v20
+                    "
+        android:strokeColor="@color/dialBorder"
+        android:strokeWidth="2"/>
+</vector>
