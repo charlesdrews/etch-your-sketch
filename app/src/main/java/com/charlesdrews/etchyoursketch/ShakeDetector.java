@@ -6,6 +6,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 /**
+ * Detect and quantify shakes so they can be translated into erasing the etchings.
+ * <p>
  * Created by charlie on 1/4/17.
  */
 

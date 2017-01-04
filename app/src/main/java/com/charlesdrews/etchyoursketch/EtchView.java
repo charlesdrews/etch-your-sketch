@@ -13,6 +13,8 @@ import android.util.TypedValue;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.Random;
+
 /**
  * This view provides the etching surface and responds to the rotation of the dials.
  * <p>
@@ -34,6 +36,7 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     private int mBackgroundColor;
     private float mEtchLineWidth, mEtchSegmentLength, mPointerSegmentLength;
     private float mX = 0f, mY = 0f;
+    private Random mEraseRandom = new Random(System.currentTimeMillis());
 
     public EtchView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -143,7 +146,24 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void erase() {
+    public void erasePartial() {
+        if (mHandlerThread.isAlive() && mReadyToDraw) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Paint paint = new Paint();
+                    paint.setColor(mBackgroundColor);
+                    for (int i = 0; i < 10; i++) {
+                        mBitmapCanvas.drawCircle(mEraseRandom.nextInt(mWidth),
+                                mEraseRandom.nextInt(mHeight), 50f, paint);
+                        drawBitmapToSurfaceCanvas();
+                    }
+                }
+            });
+        }
+    }
+
+    public void eraseAll() {
         fillBackground(mBackgroundColor);
     }
 
