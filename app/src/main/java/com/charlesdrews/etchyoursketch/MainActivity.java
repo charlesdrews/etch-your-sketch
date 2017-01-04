@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
+    private EtchView mEtchView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -12,9 +14,23 @@ public class MainActivity extends AppCompatActivity {
 
         Dial leftDial = (Dial) findViewById(R.id.left_dial);
         Dial rightDial = (Dial) findViewById(R.id.right_dial);
-        EtchView etchView = (EtchView) findViewById(R.id.etch_view);
+        mEtchView = (EtchView) findViewById(R.id.etch_view);
 
-        leftDial.setEtchViewAndOrientation(etchView, Dial.HORIZONTAL);
-        rightDial.setEtchViewAndOrientation(etchView, Dial.VERTICAL);
+        leftDial.setEtchViewAndOrientation(mEtchView, Dial.HORIZONTAL);
+        rightDial.setEtchViewAndOrientation(mEtchView, Dial.VERTICAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        mEtchView.stopThread();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mEtchView.startThread();
     }
 }

@@ -6,12 +6,14 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
+ * This view provides dial functionality and notifies EtchView when the dials are turned.
+ * <p>
  * Created by charlie on 1/3/17.
  */
 
 public class Dial extends View {
+    private static final String TAG = "Dial";
 
-    public static final float ETCH_UNIT = 5f;
     public static final int HORIZONTAL = 123;
     public static final int VERTICAL = 456;
 
@@ -40,6 +42,7 @@ public class Dial extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
         switch (event.getAction()) {
 
             case MotionEvent.ACTION_DOWN:
@@ -51,12 +54,15 @@ public class Dial extends View {
                 float newAngle = getAngleFromCenterPoint(event.getX(), event.getY());
                 float delta = newAngle - mStartAngle;
                 setRotation(getRotation() + delta);
-                etchLine(delta);
+
+                if (mEtchView != null) {
+                    mEtchView.etch(delta, mOrientation);
+                }
                 break;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-                setRotation(getRotation() % 360f);
+                setRotation(getRotation() % 360f); // don't want thousands of degrees of rotation
                 break;
         }
         return true;
@@ -70,17 +76,5 @@ public class Dial extends View {
     void setEtchViewAndOrientation(EtchView etchView, int orientation) {
         mEtchView = etchView;
         mOrientation = orientation;
-    }
-
-    void etchLine(float delta) {
-        if (mEtchView != null) {
-            switch (mOrientation) {
-                case VERTICAL:
-                    mEtchView.etch(0, delta > 0 ? -ETCH_UNIT : ETCH_UNIT);
-                    break;
-                case HORIZONTAL:
-                    mEtchView.etch(delta > 0 ? ETCH_UNIT : -ETCH_UNIT, 0);
-            }
-        }
     }
 }
