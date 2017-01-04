@@ -31,6 +31,7 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     private Canvas mBitmapCanvas;
     private Paint mEtchPaint, mPointerPaint;
     private int mWidth = 0, mHeight = 0;
+    private int mBackgroundColor;
     private float mEtchLineWidth, mEtchSegmentLength, mPointerSegmentLength;
     private float mX = 0f, mY = 0f;
 
@@ -65,6 +66,8 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
 
         getResources().getValue(R.dimen.etch_segment_length, outValue, true);
         mEtchSegmentLength = outValue.getFloat();
+
+        mBackgroundColor = ContextCompat.getColor(context, R.color.etchBackground);
     }
 
     @Override
@@ -83,7 +86,7 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         mBitmapCanvas = new Canvas(mBitmap);
 
-        fillBackground(ContextCompat.getColor(getContext(), R.color.etchBackground));
+        fillBackground(mBackgroundColor);
     }
 
     @Override
@@ -129,15 +132,19 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void fillBackground(final int color) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mReadyToDraw) {
+        if (mHandlerThread.isAlive() && mReadyToDraw) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
                     mBitmapCanvas.drawColor(color);
                     drawBitmapToSurfaceCanvas();
                 }
-            }
-        });
+            });
+        }
+    }
+
+    public void erase() {
+        fillBackground(mBackgroundColor);
     }
 
     private void drawBitmapToSurfaceCanvas() {
