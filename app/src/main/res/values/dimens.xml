@@ -3,4 +3,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="dial_size">100dp</dimen>
+    <dimen name="frame_size">16dp</dimen>
+    <dimen name="etch_line_width">2dp</dimen>
+    <dimen name="pointer_line_width">1dp</dimen>
 </resources>
