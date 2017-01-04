@@ -1,6 +1,7 @@
 package com.charlesdrews.etchyoursketch;
 
 import android.content.Context;
+import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,13 +19,15 @@ public class Dial extends View {
     public static final int VERTICAL = 456;
 
     private EtchView mEtchView;
-    private int mOrientation;
+    private int mOrientation, mActivePointerId;
     private float mCenterX = 0f, mCenterY = 0f, mStartAngle = 0f;
 
     public Dial(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         setBackgroundResource(R.drawable.dial);
+
+        mActivePointerId = MotionEvent.INVALID_POINTER_ID;
     }
 
     @Override
@@ -43,26 +46,41 @@ public class Dial extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        switch (event.getAction()) {
+        int index = MotionEventCompat.getActionIndex(event);
+        int id = event.getPointerId(index);
+        int action = MotionEventCompat.getActionMasked(event);
+
+        switch (action) {
 
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
-                mStartAngle = getAngleFromCenterPoint(event.getX(), event.getY());
+                if (event.getPointerCount() == 1) {
+                    // If this is the only pointer, use it, otherwise ignore add'l pointers
+                    mActivePointerId = id;
+                    mStartAngle = getAngleFromCenterPoint(event.getX(), event.getY());
+                }
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                float newAngle = getAngleFromCenterPoint(event.getX(), event.getY());
-                float delta = newAngle - mStartAngle;
-                setRotation(getRotation() + delta);
+                if (mActivePointerId != MotionEvent.INVALID_POINTER_ID) {
+                    float newAngle = getAngleFromCenterPoint(
+                            event.getX(event.findPointerIndex(mActivePointerId)),
+                            event.getY(event.findPointerIndex(mActivePointerId)));
+                    float delta = newAngle - mStartAngle;
+                    setRotation(getRotation() + delta);
 
-                if (mEtchView != null) {
-                    mEtchView.etch(delta, mOrientation);
+                    if (mEtchView != null) {
+                        mEtchView.etch(delta, mOrientation);
+                    }
                 }
                 break;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-                setRotation(getRotation() % 360f); // don't want thousands of degrees of rotation
+                if (id == mActivePointerId) {
+                    mActivePointerId = MotionEvent.INVALID_POINTER_ID;
+                    setRotation(getRotation() % 360f); // don't want thousands of degrees of rotation
+                }
                 break;
         }
         return true;

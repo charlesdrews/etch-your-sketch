@@ -8,8 +8,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
-import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -25,6 +26,16 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "EtchView";
 
+    private static final float ETCH_LINE_WIDTH = 4.0f;
+    private static final float ETCH_SEGMENT_LENGTH = 4.0f;
+    private static final float POINTER_LINE_WIDTH = 2.0f;
+    private static final float POINTER_SEGMENT_LENGTH = 20.0f;
+
+    private static final int PARTIAL_ERASE_MIN_SHAKES = 3;
+    private static final int PARTIAL_ERASE_CIRCLE_COUNT = 100;
+    private static final float PARTIAL_ERASE_CIRCLE_RADIUS = 50f;
+    private static final int FULL_ERASE_SHAKE_THRESHOLD = 8;
+
     private HandlerThread mHandlerThread;
     private Handler mHandler;
     private SurfaceHolder mSurfaceHolder;
@@ -32,9 +43,7 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     private Bitmap mBitmap;
     private Canvas mBitmapCanvas;
     private Paint mEtchPaint, mPointerPaint;
-    private int mWidth = 0, mHeight = 0;
-    private int mBackgroundColor;
-    private float mEtchLineWidth, mEtchSegmentLength, mPointerSegmentLength;
+    private int mWidth = 0, mHeight = 0, mBackgroundColor;
     private float mX = 0f, mY = 0f;
     private Random mEraseRandom = new Random(System.currentTimeMillis());
 
@@ -53,22 +62,12 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         mSurfaceHolder.addCallback(this);
 
         mEtchPaint = new Paint();
-        TypedValue outValue = new TypedValue();
-        getResources().getValue(R.dimen.etch_line_width, outValue, true);
-        mEtchLineWidth = outValue.getFloat();
-        mEtchPaint.setStrokeWidth(mEtchLineWidth);
+        mEtchPaint.setStrokeWidth(ETCH_LINE_WIDTH);
         mEtchPaint.setColor(ContextCompat.getColor(context, R.color.etchLineColor));
 
         mPointerPaint = new Paint();
-        getResources().getValue(R.dimen.pointer_line_width, outValue, true);
-        mPointerPaint.setStrokeWidth(outValue.getFloat());
+        mPointerPaint.setStrokeWidth(POINTER_LINE_WIDTH);
         mPointerPaint.setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-
-        getResources().getValue(R.dimen.pointer_segment_length, outValue, true);
-        mPointerSegmentLength = outValue.getFloat();
-
-        getResources().getValue(R.dimen.etch_segment_length, outValue, true);
-        mEtchSegmentLength = outValue.getFloat();
 
         mBackgroundColor = ContextCompat.getColor(context, R.color.etchBackground);
     }
@@ -97,12 +96,26 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         mSurfaceReady = false;
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int action = MotionEventCompat.getActionMasked(event);
+        switch (action) {
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
+                mX = event.getX();
+                mY = event.getY();
+                drawBitmapToSurfaceCanvas();
+                break;
+        }
+        return true;
+    }
+
     public void etch(final float angleDelta, final int orientation) {
         if (mHandlerThread.isAlive() && mReadyToDraw) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    float distance = (angleDelta < 0) ? -mEtchSegmentLength : mEtchSegmentLength;
+                    float distance = (angleDelta < 0) ? -ETCH_SEGMENT_LENGTH : ETCH_SEGMENT_LENGTH;
 
                     switch (orientation) {
                         case Dial.HORIZONTAL:
@@ -126,9 +139,9 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
 
     private float normalizeCoordinate(float coordinate, float max) {
         if (coordinate < 0) {
-            return mEtchLineWidth / 2f;
+            return ETCH_LINE_WIDTH / 2f;
         } else if (coordinate > max) {
-            return max - (mEtchLineWidth / 2f);
+            return max - (ETCH_LINE_WIDTH / 2f);
         } else {
             return coordinate;
         }
@@ -146,25 +159,26 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void erasePartial() {
-        if (mHandlerThread.isAlive() && mReadyToDraw) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Paint paint = new Paint();
-                    paint.setColor(mBackgroundColor);
-                    for (int i = 0; i < 10; i++) {
-                        mBitmapCanvas.drawCircle(mEraseRandom.nextInt(mWidth),
-                                mEraseRandom.nextInt(mHeight), 50f, paint);
-                        drawBitmapToSurfaceCanvas();
+    public void erasePartial(final int shakeCount) {
+        if (shakeCount > FULL_ERASE_SHAKE_THRESHOLD) {
+            fillBackground(mBackgroundColor);
+        } else if (shakeCount > PARTIAL_ERASE_MIN_SHAKES) {
+            if (mHandlerThread.isAlive() && mReadyToDraw) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Paint paint = new Paint();
+                        paint.setColor(mBackgroundColor);
+                        for (int i = 0; i < PARTIAL_ERASE_CIRCLE_COUNT; i++) {
+                            mBitmapCanvas.drawCircle(mEraseRandom.nextInt(mWidth),
+                                    mEraseRandom.nextInt(mHeight), PARTIAL_ERASE_CIRCLE_RADIUS,
+                                    paint);
+                            drawBitmapToSurfaceCanvas();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
-    }
-
-    public void eraseAll() {
-        fillBackground(mBackgroundColor);
     }
 
     private void drawBitmapToSurfaceCanvas() {
@@ -174,10 +188,10 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
             canvas.drawBitmap(mBitmap, 0, 0, null);
 
             // pointer
-            canvas.drawLine(mX, mY, mX + mPointerSegmentLength, mY, mPointerPaint);
-            canvas.drawLine(mX, mY, mX - mPointerSegmentLength, mY, mPointerPaint);
-            canvas.drawLine(mX, mY, mX, mY + mPointerSegmentLength, mPointerPaint);
-            canvas.drawLine(mX, mY, mX, mY - mPointerSegmentLength, mPointerPaint);
+            canvas.drawLine(mX, mY, mX + POINTER_SEGMENT_LENGTH, mY, mPointerPaint);
+            canvas.drawLine(mX, mY, mX - POINTER_SEGMENT_LENGTH, mY, mPointerPaint);
+            canvas.drawLine(mX, mY, mX, mY + POINTER_SEGMENT_LENGTH, mPointerPaint);
+            canvas.drawLine(mX, mY, mX, mY - POINTER_SEGMENT_LENGTH, mPointerPaint);
 
             mSurfaceHolder.unlockCanvasAndPost(canvas);
         }

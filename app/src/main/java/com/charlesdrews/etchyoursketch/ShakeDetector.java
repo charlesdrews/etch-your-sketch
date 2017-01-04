@@ -14,7 +14,7 @@ import android.hardware.SensorManager;
 public class ShakeDetector implements SensorEventListener {
 
     private static final float SHAKE_THRESHOLD_G_FORCE = 2.0f;
-    private static final int MS_TO_WAIT_BEFORE_CONSIDERING_NEXT_SHAKE = 500;
+    private static final int MS_TO_WAIT_BEFORE_CONSIDERING_NEXT_SHAKE = 250;
     private static final int MS_TO_WAIT_BEFORE_RESETTING_SHAKE_COUNT = 3000;
 
     private OnShakeListener mListener;

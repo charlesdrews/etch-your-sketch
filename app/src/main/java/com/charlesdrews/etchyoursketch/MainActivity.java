@@ -33,11 +33,7 @@ public class MainActivity extends AppCompatActivity {
         mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
             @Override
             public void onShake(int count) {
-                if (count > 12) {
-                    mEtchView.eraseAll();
-                } else if (count > 3) {
-                    mEtchView.erasePartial();
-                }
+                mEtchView.erasePartial(count);
             }
         });
     }
