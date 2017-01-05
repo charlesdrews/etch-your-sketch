@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Etch Your Sketch</string>
+
+    <string name="dialog_negative_button">Cancel</string>
+
+    <string name="options_dialog_title">Etching Options</string>
+    <string name="options_dialog_positive_button_label">Done</string>
+
+    <string name="color_menu_title">Color</string>
+    <string name="color_dialog_title">Select a color</string>
+
+    <string name="weight_menu_title">Weight</string>
+    <string name="weight_dialog_title">Select an etch weight</string>
+
+    <string name="share_menu_title">Share</string>
+    <string name="share_dialog_title">Share your etching</string>
+
+    <string name="erase_menu_title">Erase</string>
 </resources>

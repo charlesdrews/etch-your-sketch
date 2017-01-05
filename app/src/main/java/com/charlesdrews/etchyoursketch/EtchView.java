@@ -27,16 +27,16 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "EtchView";
 
     private static final float ETCH_LINE_WIDTH = 4.0f;
-    private static final float ETCH_SEGMENT_LENGTH = 4.0f;
+    private static final float ETCH_SEGMENT_LENGTH = 3.0f;
     private static final float POINTER_LINE_WIDTH = 2.0f;
     private static final float POINTER_SEGMENT_LENGTH = 20.0f;
 
     private static final int PARTIAL_ERASE_MIN_SHAKES = 3;
-    private static final int PARTIAL_ERASE_CIRCLE_COUNT = 100;
+    private static final int PARTIAL_ERASE_CIRCLE_COUNT = 50;
     private static final float PARTIAL_ERASE_CIRCLE_RADIUS = 50f;
-    private static final int FULL_ERASE_SHAKE_THRESHOLD = 8;
+    private static final int FULL_ERASE_SHAKE_THRESHOLD = 10;
 
-    private HandlerThread mHandlerThread;
+//    private HandlerThread mHandlerThread;
     private Handler mHandler;
     private SurfaceHolder mSurfaceHolder;
     private boolean mSurfaceReady = false, mReadyToDraw = false;
@@ -50,8 +50,8 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     public EtchView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mHandlerThread = new HandlerThread("backgroundThread");
-        mHandlerThread.start();
+//        mHandlerThread = new HandlerThread("backgroundThread");
+//        mHandlerThread.start();
 //        mHandler = new Handler(mHandlerThread.getLooper());
 
         // The UX is better using the UI thread - otherwise "etch jobs" queue up and keep executing
@@ -63,7 +63,7 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
 
         mEtchPaint = new Paint();
         mEtchPaint.setStrokeWidth(ETCH_LINE_WIDTH);
-        mEtchPaint.setColor(ContextCompat.getColor(context, R.color.etchLineColor));
+        mEtchPaint.setColor(ContextCompat.getColor(context, R.color.etchBlack));
 
         mPointerPaint = new Paint();
         mPointerPaint.setStrokeWidth(POINTER_LINE_WIDTH);
@@ -111,7 +111,8 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void etch(final float angleDelta, final int orientation) {
-        if (mHandlerThread.isAlive() && mReadyToDraw) {
+//        if (mHandlerThread.isAlive() && mReadyToDraw) {
+        if (mReadyToDraw) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -148,7 +149,8 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void fillBackground(final int color) {
-        if (mHandlerThread.isAlive() && mReadyToDraw) {
+//        if (mHandlerThread.isAlive() && mReadyToDraw) {
+        if (mReadyToDraw) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -163,7 +165,8 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         if (shakeCount > FULL_ERASE_SHAKE_THRESHOLD) {
             fillBackground(mBackgroundColor);
         } else if (shakeCount > PARTIAL_ERASE_MIN_SHAKES) {
-            if (mHandlerThread.isAlive() && mReadyToDraw) {
+//            if (mHandlerThread.isAlive() && mReadyToDraw) {
+            if (mReadyToDraw) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -197,17 +200,27 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    public void setEtchColor(int color) {
+        mEtchPaint.setColor(color);
+    }
+
+    public int getEtchColor() {
+        return mEtchPaint.getColor();
+    }
+
     public void stopThread() {
-        mHandlerThread.quit();
+//        mHandlerThread.quit();
         mReadyToDraw = false;
     }
 
     public void startThread() {
-        if (!mHandlerThread.isAlive()) {
-            mHandlerThread.start();
-        }
+//        if (!mHandlerThread.isAlive()) {
+//            mHandlerThread.start();
+//        }
         if (mSurfaceReady) {
             mReadyToDraw = true;
         }
     }
+
+    //TODO: Remote display? https://developers.google.com/cast/docs/remote
 }

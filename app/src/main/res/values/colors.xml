@@ -8,5 +8,16 @@
     <color name="dialBackground">#F5F5F5</color>
     <color name="dialBorder">#000000</color>
     <color name="etchBackground">#BDBDBD</color>
-    <color name="etchLineColor">#000000</color>
+
+    <color name="etchBlack">#000000</color>
+    <color name="etchBlue">#0000ff</color>
+    <color name="etchRed">#ff0000</color>
+    <color name="etchGreen">#008000</color>
+
+    <array name="etchColors">
+        <item>@color/etchBlack</item>
+        <item>@color/etchBlue</item>
+        <item>@color/etchRed</item>
+        <item>@color/etchGreen</item>
+    </array>
 </resources>

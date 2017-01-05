@@ -4,4 +4,5 @@
 
     <dimen name="dial_size">100dp</dimen>
     <dimen name="frame_size">16dp</dimen>
+    <dimen name="menu_icon_size">36dp</dimen>
 </resources>
