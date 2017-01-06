@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.charlesdrews.etchyoursketch.EtchActivity;
@@ -21,6 +22,9 @@ public class GalleryActivity extends AppCompatActivity implements
         GalleryRvAdapter.OnGalleryItemSelectedListener,
         GallerySelectionDialog.OnGalleryActionListener {
 
+    private static final String TAG = "GalleryActivity";
+    private static final int DESIRED_MIN_COLUMN_WIDTH_PX = 500;
+    
     private GalleryRvAdapter mAdapter;
 
     @Override
@@ -36,10 +40,14 @@ public class GalleryActivity extends AppCompatActivity implements
             }
         };
         File path = new File(getFilesDir(), "images");
-        files.addAll(Arrays.asList(path.listFiles(filter)));
+        if (path.exists()) {
+            files.addAll(Arrays.asList(path.listFiles(filter)));
+        }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+
+        int numColumns = getResources().getDisplayMetrics().widthPixels / DESIRED_MIN_COLUMN_WIDTH_PX;
+        recyclerView.setLayoutManager(new GridLayoutManager(this, numColumns));
 
         mAdapter = new GalleryRvAdapter(files, this);
         recyclerView.setAdapter(mAdapter);

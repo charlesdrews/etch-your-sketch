@@ -24,11 +24,11 @@ import java.io.IOException;
 public class EtchActivity extends AppCompatActivity implements View.OnClickListener,
         ColorDialog.OnOptionsSelectedListener {
 
-    private static final String TAG = "EtchActivity";
 
     public static final String FILE_PROVIDER_AUTHORITY = "com.charlesdrews.etchyoursketch.fileprovider";
     public static final int SHARE_REQUEST_CODE = 567;
 
+    private static final String TAG = "EtchActivity";
     private static final String CURRENT_ETCHING_KEY = "currentEtching";
 
     private EtchView mEtchView;
@@ -44,7 +44,6 @@ public class EtchActivity extends AppCompatActivity implements View.OnClickListe
 
         // Restore current etching if in bundle
         if (savedInstanceState != null) {
-            Log.d(TAG, "onCreate: get etching from bundle");
             mCurrentEtching = savedInstanceState.getParcelable(CURRENT_ETCHING_KEY);
         }
 
@@ -81,7 +80,6 @@ public class EtchActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == SHARE_REQUEST_CODE) {
             File cacheDir = new File(getCacheDir(), "images");
             for (File file : cacheDir.listFiles()) {
-                Log.d(TAG, "onActivityResult: deleting " + file.getAbsolutePath());
                 file.delete();
             }
         }
@@ -92,7 +90,6 @@ public class EtchActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
 
         if (mCurrentEtching != null) {
-            Log.d(TAG, "onResume: restoring etching");
             mEtchView.restoreEtching(mCurrentEtching);
         }
 
@@ -105,14 +102,12 @@ public class EtchActivity extends AppCompatActivity implements View.OnClickListe
         super.onPause();
 
         mCurrentEtching = mEtchView.getEtchBitmap();
-        Log.d(TAG, "onPause: saving current etching");
         mSensorManager.unregisterListener(mShakeDetector);
         mEtchView.stopEtching();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        Log.d(TAG, "onSaveInstanceState: putting etching in bundle");
         mCurrentEtching = mEtchView.getEtchBitmap();
         outState.putParcelable(CURRENT_ETCHING_KEY, mCurrentEtching);
 
@@ -212,7 +207,7 @@ public class EtchActivity extends AppCompatActivity implements View.OnClickListe
         File path = new File((temporary ? getCacheDir() : getFilesDir()), "images");
         if (!path.exists()) {
             if (!path.mkdir()) {
-                Log.d(TAG, "saveBitmapToFile: Unable to create path " + path.getAbsolutePath());
+                Log.w(TAG, "saveBitmapToFile: Unable to create path " + path.getAbsolutePath());
                 return null;
             }
         }
