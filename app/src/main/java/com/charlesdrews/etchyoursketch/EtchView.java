@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -85,10 +86,16 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         mY = height / 2f;
         mReadyToDraw = true;
 
-        mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        mBitmapCanvas = new Canvas(mBitmap);
-
-        fillBackground(mBackgroundColor);
+        if (mBitmap == null) {
+            // Brand new instance of EtchView, so initialize the bitmap
+            mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            mBitmapCanvas = new Canvas(mBitmap);
+            fillBackground(mBackgroundColor);
+        } else {
+            // Otherwise, use the existing, restored bitmap
+            mBitmapCanvas = new Canvas(mBitmap);
+            drawBitmapToSurfaceCanvas();
+        }
     }
 
     @Override
@@ -212,18 +219,24 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         return mBitmap;
     }
 
-    public void stopThread() {
+    public void stopEtching() {
 //        mHandlerThread.quit();
         mReadyToDraw = false;
     }
 
-    public void startThread() {
+    public void readyToEtch() {
 //        if (!mHandlerThread.isAlive()) {
 //            mHandlerThread.start();
 //        }
         if (mSurfaceReady) {
             mReadyToDraw = true;
         }
+    }
+
+    public void restoreEtching(Bitmap etching) {
+        Log.d(TAG, "restoreEtching: ");
+        mBitmap = etching;
+        drawBitmapToSurfaceCanvas();
     }
 
     //TODO: Remote display? https://developers.google.com/cast/docs/remote

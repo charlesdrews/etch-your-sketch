@@ -21,6 +21,9 @@
 
     <string name="share_menu_title">Share</string>
     <string name="share_dialog_title">Share your etching</string>
+    <string name="share_fail_message">There was a problem sharing your etching.</string>
+    <string name="share_chooser_title">Share your etching to…</string>
+    <string name="share_text">Look at what I etched with Etch-Your-Sketch!</string>
 
     <string name="gallery_menu_title">Gallery</string>
     <string name="gallery_activity_title">Your Etchings</string>

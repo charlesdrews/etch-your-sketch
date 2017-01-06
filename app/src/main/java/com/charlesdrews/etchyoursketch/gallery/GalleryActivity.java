@@ -1,11 +1,15 @@
 package com.charlesdrews.etchyoursketch.gallery;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
+import com.charlesdrews.etchyoursketch.EtchActivity;
 import com.charlesdrews.etchyoursketch.R;
 
 import java.io.File;
@@ -31,7 +35,8 @@ public class GalleryActivity extends AppCompatActivity implements
                 return pathname.getName().matches(".*\\.png$");
             }
         };
-        files.addAll(Arrays.asList(getFilesDir().listFiles(filter)));
+        File path = new File(getFilesDir(), "images");
+        files.addAll(Arrays.asList(path.listFiles(filter)));
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
@@ -58,7 +63,19 @@ public class GalleryActivity extends AppCompatActivity implements
 
     @Override
     public void onGalleryItemShared(File fileToShare) {
-        //TODO
-        Toast.makeText(this, "Sharing...", Toast.LENGTH_SHORT).show();
+        if (fileToShare != null && fileToShare.exists()) {
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/*");
+
+            Uri uri = FileProvider.getUriForFile(this, EtchActivity.FILE_PROVIDER_AUTHORITY, fileToShare);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text));
+
+            startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)));
+        } else {
+            Toast.makeText(this, R.string.share_fail_message, Toast.LENGTH_SHORT).show();
+        }
     }
 }
