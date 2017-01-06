@@ -1,4 +1,4 @@
-package com.charlesdrews.etchyoursketch.options;
+package com.charlesdrews.etchyoursketch.colors;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

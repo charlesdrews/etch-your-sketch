@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.charlesdrews.etchyoursketch.R;
 
@@ -12,8 +13,11 @@ import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class GalleryActivity extends AppCompatActivity
-        implements GalleryRvAdapter.OnGalleryItemSelectedListener {
+public class GalleryActivity extends AppCompatActivity implements
+        GalleryRvAdapter.OnGalleryItemSelectedListener,
+        GallerySelectionDialog.OnGalleryActionListener {
+
+    private GalleryRvAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +35,30 @@ public class GalleryActivity extends AppCompatActivity
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        recyclerView.setAdapter(new GalleryRvAdapter(files, this));
+
+        mAdapter = new GalleryRvAdapter(files, this);
+        recyclerView.setAdapter(mAdapter);
+
+        //TODO - add itemdecorator for better spacing
     }
 
     @Override
     public void onGalleryItemSelected(File selectedImage) {
         GallerySelectionDialog.newInstance(selectedImage)
                 .show(getSupportFragmentManager(), "galleryDialog");
+    }
+
+    @Override
+    public void onGalleryItemDeleted(File fileToDelete) {
+        if (fileToDelete.delete()) {
+            mAdapter.removeFile(fileToDelete);
+        }
+        //TODO - snackbar w/ undo?
+    }
+
+    @Override
+    public void onGalleryItemShared(File fileToShare) {
+        //TODO
+        Toast.makeText(this, "Sharing...", Toast.LENGTH_SHORT).show();
     }
 }

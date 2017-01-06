@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gallery_dialog_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/gallery_dialog_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/gallery_entry_description"
+        android:scaleType="fitStart"/>
+
+    <ImageView
+        android:id="@+id/gallery_dialog_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:contentDescription="@string/gallery_selection_close_title"
+        android:padding="@dimen/gallery_dialog_icon_padding"
+        android:src="@drawable/close"/>
+
+    <ImageView
+        android:id="@+id/gallery_dialog_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:contentDescription="@string/delete_option_title"
+        android:padding="@dimen/gallery_dialog_icon_padding"
+        android:src="@drawable/delete"/>
+
+    <ImageView
+        android:id="@+id/gallery_dialog_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:contentDescription="@string/share_menu_title"
+        android:padding="@dimen/gallery_dialog_icon_padding"
+        android:src="@drawable/share"/>
+</FrameLayout>

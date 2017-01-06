@@ -25,4 +25,10 @@
     <string name="gallery_menu_title">Gallery</string>
     <string name="gallery_activity_title">Your Etchings</string>
     <string name="gallery_entry_description">Etching</string>
+    <string name="gallery_selection_close_title">Close</string>
+
+    <string name="delete_option_title">Delete</string>
+    <string name="delete_confirmation_title">Delete etching?</string>
+    <string name="delete_pos_button">Yes</string>
+    <string name="delete_neg_button">No</string>
 </resources>

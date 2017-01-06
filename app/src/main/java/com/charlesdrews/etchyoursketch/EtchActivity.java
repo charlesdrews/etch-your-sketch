@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.charlesdrews.etchyoursketch.gallery.GalleryActivity;
-import com.charlesdrews.etchyoursketch.options.ColorDialog;
+import com.charlesdrews.etchyoursketch.colors.ColorDialog;
 
 import java.io.FileOutputStream;
 import java.io.IOException;

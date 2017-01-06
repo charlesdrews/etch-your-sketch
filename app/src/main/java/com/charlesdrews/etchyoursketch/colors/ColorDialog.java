@@ -1,8 +1,7 @@
-package com.charlesdrews.etchyoursketch.options;
+package com.charlesdrews.etchyoursketch.colors;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -82,7 +81,7 @@ public class ColorDialog extends DialogFragment {
             mListener = (OnOptionsSelectedListener) context;
         } else {
             throw new ClassCastException(context.getClass().getName()
-                    + " must implement OnOptionsSelectedListener!");
+                    + " must implement " + OnOptionsSelectedListener.class.getName());
         }
     }
 
