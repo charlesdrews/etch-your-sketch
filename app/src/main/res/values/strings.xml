@@ -12,8 +12,17 @@
     <string name="weight_menu_title">Weight</string>
     <string name="weight_dialog_title">Select an etch weight</string>
 
+    <string name="erase_menu_title">Erase</string>
+
+    <string name="save_menu_title">Save</string>
+    <string name="save_dialog_title">Save your etching</string>
+    <string name="save_success_msg">Etching saved!</string>
+    <string name="save_error_msg">There was a problem saving your etching.</string>
+
     <string name="share_menu_title">Share</string>
     <string name="share_dialog_title">Share your etching</string>
 
-    <string name="erase_menu_title">Erase</string>
+    <string name="gallery_menu_title">Gallery</string>
+    <string name="gallery_activity_title">Your Etchings</string>
+    <string name="gallery_entry_description">Etching</string>
 </resources>

@@ -1,20 +1,25 @@
 package com.charlesdrews.etchyoursketch;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
+import com.charlesdrews.etchyoursketch.gallery.GalleryActivity;
 import com.charlesdrews.etchyoursketch.options.ColorDialog;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class EtchActivity extends AppCompatActivity implements View.OnClickListener,
         ColorDialog.OnOptionsSelectedListener {
+
+    private static final String TAG = "EtchActivity";
 
     private EtchView mEtchView;
     private SensorManager mSensorManager;
@@ -46,10 +51,12 @@ public class EtchActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         // Set up options menu
-        findViewById(R.id.ic_color).setOnClickListener(this);
-        findViewById(R.id.ic_weight).setOnClickListener(this);
-        findViewById(R.id.ic_erase).setOnClickListener(this);
-        findViewById(R.id.ic_share).setOnClickListener(this);
+        findViewById(R.id.menu_color).setOnClickListener(this);
+        findViewById(R.id.menu_weight).setOnClickListener(this);
+        findViewById(R.id.menu_erase).setOnClickListener(this);
+        findViewById(R.id.menu_save).setOnClickListener(this);
+        findViewById(R.id.menu_gallery).setOnClickListener(this);
+        findViewById(R.id.menu_share).setOnClickListener(this);
     }
 
     @Override
@@ -71,26 +78,42 @@ public class EtchActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
-            case R.id.ic_color:
-                DialogFragment optionsDialog = ColorDialog.newInstance(mEtchView.getEtchColor());
-                optionsDialog.show(getSupportFragmentManager(), "optionsDialog");
+            case R.id.menu_color:
+                ColorDialog.newInstance(mEtchView.getEtchColor())
+                        .show(getSupportFragmentManager(), "colorDialog");
                 break;
-
-            case R.id.ic_weight:
+            case R.id.menu_weight:
                 break;
-
-            case R.id.ic_erase:
+            case R.id.menu_erase:
                 break;
-
-            case R.id.ic_share:
+            case R.id.menu_save:
+                saveEtching();
+                break;
+            case R.id.menu_gallery:
+                startActivity(new Intent(this, GalleryActivity.class));
+                break;
+            case R.id.menu_share:
                 break;
         }
-
     }
 
     @Override
     public void onColorOptionSelected(int color) {
         mEtchView.setEtchColor(color);
+    }
+
+    public void saveEtching() {
+        //TODO - move off UI thread?
+        try {
+            FileOutputStream outputStream = openFileOutput(
+                    "etch" + System.currentTimeMillis() + ".png", MODE_PRIVATE);
+            mEtchView.getEtchBitmap()
+                    .compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.close();
+            Toast.makeText(this, R.string.save_success_msg, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Toast.makeText(this, R.string.save_error_msg, Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 }

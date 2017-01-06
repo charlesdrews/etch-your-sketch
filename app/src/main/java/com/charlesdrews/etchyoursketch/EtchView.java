@@ -208,6 +208,10 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         return mEtchPaint.getColor();
     }
 
+    public Bitmap getEtchBitmap() {
+        return mBitmap;
+    }
+
     public void stopThread() {
 //        mHandlerThread.quit();
         mReadyToDraw = false;
