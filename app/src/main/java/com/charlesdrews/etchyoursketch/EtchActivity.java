@@ -14,15 +14,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.charlesdrews.etchyoursketch.colors.ColorDialog;
+import com.charlesdrews.etchyoursketch.options.color.ColorDialog;
 import com.charlesdrews.etchyoursketch.gallery.GalleryActivity;
+import com.charlesdrews.etchyoursketch.options.weight.WeightDialog;
+import com.charlesdrews.etchyoursketch.options.weight.WeightView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class EtchActivity extends AppCompatActivity implements View.OnClickListener,
-        ColorDialog.OnOptionsSelectedListener {
+        ColorDialog.OnColorSelectedListener, WeightDialog.OnWeightSelectedListener {
 
 
     public static final String FILE_PROVIDER_AUTHORITY = "com.charlesdrews.etchyoursketch.fileprovider";
@@ -121,16 +123,23 @@ public class EtchActivity extends AppCompatActivity implements View.OnClickListe
                 ColorDialog.newInstance(mEtchView.getEtchColor())
                         .show(getSupportFragmentManager(), "colorDialog");
                 break;
+
             case R.id.menu_weight:
+                WeightDialog.newInstance(mEtchView.getEtchLineWeight())
+                        .show(getSupportFragmentManager(), "weightDialog");
                 break;
+
             case R.id.menu_erase:
                 break;
+
             case R.id.menu_save:
                 saveEtching();
                 break;
+
             case R.id.menu_gallery:
                 startActivity(new Intent(this, GalleryActivity.class));
                 break;
+
             case R.id.menu_share:
                 shareEtching();
                 break;
@@ -138,8 +147,13 @@ public class EtchActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onColorOptionSelected(int color) {
+    public void onColorSelected(int color) {
         mEtchView.setEtchColor(color);
+    }
+
+    @Override
+    public void onWeightSelected(float etchWeightPx) {
+        mEtchView.setEtchLineWeight(etchWeightPx);
     }
 
     public void saveEtching() {

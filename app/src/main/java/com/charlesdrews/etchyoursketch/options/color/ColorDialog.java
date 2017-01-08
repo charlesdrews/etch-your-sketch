@@ -1,4 +1,4 @@
-package com.charlesdrews.etchyoursketch.colors;
+package com.charlesdrews.etchyoursketch.options.color;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -22,7 +22,7 @@ public class ColorDialog extends DialogFragment {
 
     private static final String CURRENT_COLOR_KEY = "currentColor";
 
-    private OnOptionsSelectedListener mListener;
+    private OnColorSelectedListener mListener;
 
     public static ColorDialog newInstance(int currentColor) {
         ColorDialog colorDialog = new ColorDialog();
@@ -54,7 +54,7 @@ public class ColorDialog extends DialogFragment {
                 @Override
                 public void onClick(View v) {
                     colorGrid.selectColor(colorView);
-                    mListener.onColorOptionSelected(colorView.getColor());
+                    mListener.onColorSelected(colorView.getColor());
                     dismiss();
                 }
             });
@@ -77,15 +77,15 @@ public class ColorDialog extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof OnOptionsSelectedListener) {
-            mListener = (OnOptionsSelectedListener) context;
+        if (context instanceof OnColorSelectedListener) {
+            mListener = (OnColorSelectedListener) context;
         } else {
             throw new ClassCastException(context.getClass().getName()
-                    + " must implement " + OnOptionsSelectedListener.class.getName());
+                    + " must implement " + OnColorSelectedListener.class.getName());
         }
     }
 
-    public interface OnOptionsSelectedListener {
-        void onColorOptionSelected(int color);
+    public interface OnColorSelectedListener {
+        void onColorSelected(int color);
     }
 }

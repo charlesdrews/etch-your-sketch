@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
@@ -14,6 +13,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.charlesdrews.etchyoursketch.options.weight.WeightDialog;
 
 import java.util.Random;
 
@@ -27,7 +28,6 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "EtchView";
 
-    private static final float ETCH_LINE_WIDTH = 4.0f;
     private static final float ETCH_SEGMENT_LENGTH = 3.0f;
     private static final float POINTER_LINE_WIDTH = 2.0f;
     private static final float POINTER_SEGMENT_LENGTH = 20.0f;
@@ -63,7 +63,7 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         mSurfaceHolder.addCallback(this);
 
         mEtchPaint = new Paint();
-        mEtchPaint.setStrokeWidth(ETCH_LINE_WIDTH);
+        mEtchPaint.setStrokeWidth(WeightDialog.ETCH_LINE_WEIGHTS[0]); // default weight
         mEtchPaint.setColor(ContextCompat.getColor(context, R.color.etchBlack));
 
         mPointerPaint = new Paint();
@@ -147,9 +147,9 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
 
     private float normalizeCoordinate(float coordinate, float max) {
         if (coordinate < 0) {
-            return ETCH_LINE_WIDTH / 2f;
+            return mEtchPaint.getStrokeWidth() / 2f;
         } else if (coordinate > max) {
-            return max - (ETCH_LINE_WIDTH / 2f);
+            return max - (mEtchPaint.getStrokeWidth() / 2f);
         } else {
             return coordinate;
         }
@@ -213,6 +213,14 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
 
     public int getEtchColor() {
         return mEtchPaint.getColor();
+    }
+
+    public float getEtchLineWeight() {
+        return mEtchPaint.getStrokeWidth();
+    }
+
+    public void setEtchLineWeight(float etchLineWeight) {
+        mEtchPaint.setStrokeWidth(etchLineWeight);
     }
 
     public Bitmap getEtchBitmap() {

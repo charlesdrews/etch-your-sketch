@@ -1,4 +1,4 @@
-package com.charlesdrews.etchyoursketch.colors;
+package com.charlesdrews.etchyoursketch.options;
 
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
@@ -14,42 +14,24 @@ import com.charlesdrews.etchyoursketch.R;
  * Created by charlie on 1/5/17.
  */
 
-public class ColorView extends ImageView {
+public class BaseOptionView extends ImageView {
 
     private static final int DEFAULT_SIZE_DP = 48;
     private static final int DEFAULT_MARGIN_DP = 6;
 
-    private int mSizePx, mMarginPx, mColor;
+    private int mSizePx, mMarginPx;
     private boolean mSelected = false;
 
-    public ColorView(Context context, AttributeSet attrs) {
+    public BaseOptionView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mSizePx = dpToPx(DEFAULT_SIZE_DP);
         mMarginPx = dpToPx(DEFAULT_MARGIN_DP);
-        mColor = ContextCompat.getColor(context, R.color.etchBlack);
-        init();
     }
 
-    public ColorView(Context context, AttributeSet attrs, int color) {
-        super(context, attrs);
-        mSizePx = dpToPx(DEFAULT_SIZE_DP);
-        mMarginPx = dpToPx(DEFAULT_MARGIN_DP);
-        mColor = color;
-        init();
-    }
-
-    public ColorView(Context context, AttributeSet attrs, int color, int sizeDp, int marginDp) {
+    public BaseOptionView(Context context, AttributeSet attrs, int sizeDp, int marginDp) {
         super(context, attrs);
         mSizePx = dpToPx((sizeDp > 0) ? sizeDp : DEFAULT_SIZE_DP);
         mMarginPx = dpToPx((marginDp >= 0) ? marginDp : DEFAULT_MARGIN_DP);
-        mColor = color;
-        init();
-    }
-
-    private void init() {
-        ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
-        drawable.getPaint().setColor(mColor);
-        setBackground(drawable);
     }
 
     @Override
@@ -82,10 +64,6 @@ public class ColorView extends ImageView {
 
     public boolean isSelected() {
         return mSelected;
-    }
-
-    public int getColor() {
-        return mColor;
     }
 
     private int dpToPx(int dp) {
