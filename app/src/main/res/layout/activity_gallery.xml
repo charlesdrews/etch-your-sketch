@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_gallery"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context="com.charlesdrews.etchyoursketch.gallery.GalleryActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/gallery_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</RelativeLayout>
+        android:layout_height="wrap_content"
+        android:padding="@dimen/gallery_entry_half_margin"/>
+</FrameLayout>

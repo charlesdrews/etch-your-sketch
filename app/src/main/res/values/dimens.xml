@@ -5,7 +5,7 @@
     <dimen name="dial_size">100dp</dimen>
     <dimen name="frame_size">16dp</dimen>
     <dimen name="menu_icon_size">30dp</dimen>
-    <dimen name="gallery_entry_margin">16dp</dimen>
+    <dimen name="gallery_entry_half_margin">8dp</dimen>
     <dimen name="gallery_entry_corner_radius">10dp</dimen>
     <dimen name="gallery_entry_elevation">6dp</dimen>
     <dimen name="gallery_dialog_icon_padding">10dp</dimen>

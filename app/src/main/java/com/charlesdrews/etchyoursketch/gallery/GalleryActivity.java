@@ -51,8 +51,6 @@ public class GalleryActivity extends AppCompatActivity implements
 
         mAdapter = new GalleryRvAdapter(files, this);
         recyclerView.setAdapter(mAdapter);
-
-        //TODO - add itemdecorator for better spacing
     }
 
     @Override
@@ -66,7 +64,6 @@ public class GalleryActivity extends AppCompatActivity implements
         if (fileToDelete.delete()) {
             mAdapter.removeFile(fileToDelete);
         }
-        //TODO - snackbar w/ undo?
     }
 
     @Override
