@@ -1,6 +1,7 @@
 package com.charlesdrews.etchyoursketch.options.color;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.support.v4.content.ContextCompat;
@@ -36,12 +37,26 @@ public class ColorView extends BaseOptionView {
     }
 
     private void init() {
-        ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
-        drawable.getPaint().setColor(mColor);
-        setBackground(drawable);
+        if (mColor == Color.WHITE) {
+            setBackground(ContextCompat.getDrawable(getContext(),
+                    R.drawable.white_circle_black_border));
+        } else {
+            ShapeDrawable drawable = new ShapeDrawable(new OvalShape());
+            drawable.getPaint().setColor(mColor);
+            setBackground(drawable);
+        }
     }
 
     public int getColor() {
         return mColor;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+
+        if (selected && mColor == Color.WHITE) {
+            setColorFilter(Color.BLACK);
+        }
     }
 }

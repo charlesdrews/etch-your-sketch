@@ -4,20 +4,44 @@
     <color name="colorPrimaryDark">#D32F2F</color>
     <color name="colorAccent">#00E5FF</color>
 
+    <color name="menu_icons">#FFFFFF</color>
+
     <color name="frame">@color/colorPrimary</color>
     <color name="dialBackground">#F5F5F5</color>
     <color name="dialBorder">#000000</color>
     <color name="etchBackground">#BDBDBD</color>
 
+    <color name="etchWhite">#FFFFFF</color>
     <color name="etchBlack">#000000</color>
-    <color name="etchBlue">#0000ff</color>
-    <color name="etchRed">#ff0000</color>
+    <color name="etchRed">#FF0000</color>
+    <color name="etchMaroon">#800000</color>
+    <color name="etchOrange">#FF8800</color>
+    <color name="etchYellow">#FFFF00</color>
+    <color name="etchOlive">#808000</color>
+    <color name="etchLime">#00FF00</color>
     <color name="etchGreen">#008000</color>
+    <color name="etchAqua">#00FFFF</color>
+    <color name="etchTeal">#008080</color>
+    <color name="etchBlue">#0000ff</color>
+    <color name="etchNavy">#000080</color>
+    <color name="etchFuchsia">#FF00FF</color>
+    <color name="etchPurple">#800080</color>
 
     <array name="etchColors">
+        <item>@color/etchWhite</item>
         <item>@color/etchBlack</item>
-        <item>@color/etchBlue</item>
         <item>@color/etchRed</item>
+        <item>@color/etchMaroon</item>
+        <item>@color/etchOrange</item>
+        <item>@color/etchYellow</item>
+        <item>@color/etchOlive</item>
+        <item>@color/etchLime</item>
         <item>@color/etchGreen</item>
+        <item>@color/etchAqua</item>
+        <item>@color/etchTeal</item>
+        <item>@color/etchBlue</item>
+        <item>@color/etchNavy</item>
+        <item>@color/etchFuchsia</item>
+        <item>@color/etchPurple</item>
     </array>
 </resources>

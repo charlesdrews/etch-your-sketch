@@ -1,9 +1,6 @@
 package com.charlesdrews.etchyoursketch.options;
 
 import android.content.Context;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -56,7 +53,7 @@ public class BaseOptionView extends ImageView {
     public void setSelected(boolean selected) {
         mSelected = selected;
         if (mSelected) {
-            setImageResource(R.drawable.checkmark);
+            setImageResource(R.drawable.ic_checkmark);
         } else {
             setImageResource(0);
         }

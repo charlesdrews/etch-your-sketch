@@ -52,9 +52,14 @@ public class GalleryRvAdapter extends RecyclerView.Adapter<GalleryViewHolder> {
         int index = mFiles.indexOf(fileToRemove);
         mFiles.remove(index);
         notifyItemRemoved(index);
+
+        if (mFiles.isEmpty()) {
+            mListener.onGalleryEmptied();
+        }
     }
 
     public interface OnGalleryItemSelectedListener {
         void onGalleryItemSelected(File selectedImage);
+        void onGalleryEmptied();
     }
 }

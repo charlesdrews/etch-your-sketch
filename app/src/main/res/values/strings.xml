@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Etch Your Sketch</string>
 
+    <string name="shared_prefs_key">com.charlesdrews.etchyoursketch.SHARED_PREFS</string>
+
     <string name="dialog_negative_button">Cancel</string>
 
     <string name="options_dialog_title">Etching Options</string>
@@ -13,6 +15,10 @@
     <string name="weight_dialog_title">Select an etch weight</string>
 
     <string name="erase_menu_title">Erase</string>
+    <string name="erase_dialog_title">Eraser</string>
+    <string name="erase_dialog_message">Touch where you\'d like to erase, or &lt;b>&lt;i>shake&lt;/i>&lt;/b> to clear the whole etching.</string>
+    <string name="erase_dialog_pos_button">OK</string>
+    <string name="erase_dialog_neutral_button">Don\'t show again</string>
 
     <string name="save_menu_title">Save</string>
     <string name="save_dialog_title">Save your etching</string>
@@ -29,6 +35,7 @@
     <string name="gallery_activity_title">Your Etchings</string>
     <string name="gallery_entry_description">Etching</string>
     <string name="gallery_selection_close_title">Close</string>
+    <string name="gallery_empty_message">You don\'t have any saved etchings.</string>
 
     <string name="delete_option_title">Delete</string>
     <string name="delete_confirmation_title">Delete etching?</string>

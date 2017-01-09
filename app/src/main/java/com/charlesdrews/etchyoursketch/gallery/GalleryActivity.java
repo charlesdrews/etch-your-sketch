@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.charlesdrews.etchyoursketch.EtchActivity;
@@ -32,6 +33,7 @@ public class GalleryActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
+        // Get saved etchings
         ArrayList<File> files = new ArrayList<>();
         FileFilter filter = new FileFilter() {
             @Override
@@ -44,19 +46,31 @@ public class GalleryActivity extends AppCompatActivity implements
             files.addAll(Arrays.asList(path.listFiles(filter)));
         }
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
+        // If none saved, show empty gallery message, otherwise set up recycler view
+        if (files.isEmpty()) {
+            findViewById(R.id.gallery_empty_text).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.gallery_empty_text).setVisibility(View.GONE);
 
-        int numColumns = getResources().getDisplayMetrics().widthPixels / DESIRED_MIN_COLUMN_WIDTH_PX;
-        recyclerView.setLayoutManager(new GridLayoutManager(this, numColumns));
+            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.gallery_recycler_view);
 
-        mAdapter = new GalleryRvAdapter(files, this);
-        recyclerView.setAdapter(mAdapter);
+            int numColumns = getResources().getDisplayMetrics().widthPixels / DESIRED_MIN_COLUMN_WIDTH_PX;
+            recyclerView.setLayoutManager(new GridLayoutManager(this, numColumns));
+
+            mAdapter = new GalleryRvAdapter(files, this);
+            recyclerView.setAdapter(mAdapter);
+        }
     }
 
     @Override
     public void onGalleryItemSelected(File selectedImage) {
         GallerySelectionDialog.newInstance(selectedImage)
                 .show(getSupportFragmentManager(), "galleryDialog");
+    }
+
+    @Override
+    public void onGalleryEmptied() {
+        findViewById(R.id.gallery_empty_text).setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -28,36 +28,34 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "EtchView";
 
-    private static final float ETCH_SEGMENT_LENGTH = 3.0f;
-    private static final float POINTER_LINE_WIDTH = 2.0f;
-    private static final float POINTER_SEGMENT_LENGTH = 20.0f;
+    private static final float ETCH_SEGMENT_LENGTH = 3f;
+    private static final float POINTER_LINE_WIDTH = 2f;
+    private static final float POINTER_SEGMENT_LENGTH = 20f;
+    private static final float ERASE_LINE_WIDTH = 50f;
 
     private static final int PARTIAL_ERASE_MIN_SHAKES = 3;
     private static final int PARTIAL_ERASE_CIRCLE_COUNT = 50;
     private static final float PARTIAL_ERASE_CIRCLE_RADIUS = 50f;
     private static final int FULL_ERASE_SHAKE_THRESHOLD = 10;
 
-//    private HandlerThread mHandlerThread;
     private Handler mHandler;
     private SurfaceHolder mSurfaceHolder;
-    private boolean mSurfaceReady = false, mReadyToDraw = false;
+    private boolean mSurfaceReady = false, mReadyToDraw = false, mErasing = false;
     private Bitmap mBitmap;
     private Canvas mBitmapCanvas;
-    private Paint mEtchPaint, mPointerPaint;
+    private Paint mEtchPaint, mPointerPaint, mErasePaint;
     private int mWidth = 0, mHeight = 0, mBackgroundColor;
-    private float mX = 0f, mY = 0f;
+    private float mX = 0f, mY = 0f, mEraseLastX, mEraseLastY;
     private Random mEraseRandom = new Random(System.currentTimeMillis());
+    private OnEraseFinishedListener mOnEraseFinishedListener;
 
     public EtchView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-//        mHandlerThread = new HandlerThread("backgroundThread");
-//        mHandlerThread.start();
-//        mHandler = new Handler(mHandlerThread.getLooper());
-
         // The UX is better using the UI thread - otherwise "etch jobs" queue up and keep executing
         // after the user has stopped touching the dials, which is unpleasant.
         mHandler = new Handler(Looper.getMainLooper());
+        // Stick with a handler for now - can always change it to use a background thread later if desired
 
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
@@ -71,6 +69,10 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         mPointerPaint.setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
 
         mBackgroundColor = ContextCompat.getColor(context, R.color.etchBackground);
+
+        mErasePaint = new Paint();
+        mErasePaint.setColor(mBackgroundColor);
+        mErasePaint.setStrokeWidth(ERASE_LINE_WIDTH);
     }
 
     @Override
@@ -106,19 +108,46 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int action = MotionEventCompat.getActionMasked(event);
-        switch (action) {
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-                mX = event.getX();
-                mY = event.getY();
-                drawBitmapToSurfaceCanvas();
-                break;
+
+        if (mErasing) {
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    mEraseLastX = event.getX();
+                    mEraseLastY = event.getY();
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    float newX = event.getX();
+                    float newY = event.getY();
+                    eraseSegment(mEraseLastX, mEraseLastY, newX, newY);
+                    mEraseLastX = newX;
+                    mEraseLastY = newY;
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_POINTER_UP:
+                    mErasing = false;
+                    if (mOnEraseFinishedListener != null) {
+                        mOnEraseFinishedListener.onEraseFinished();
+                    }
+                    break;
+            }
+
+        } else {
+            switch (action) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_POINTER_UP:
+                    mX = event.getX();
+                    mY = event.getY();
+                    drawBitmapToSurfaceCanvas();
+                    break;
+            }
         }
         return true;
     }
 
     public void etch(final float angleDelta, final int orientation) {
-//        if (mHandlerThread.isAlive() && mReadyToDraw) {
         if (mReadyToDraw) {
             mHandler.post(new Runnable() {
                 @Override
@@ -145,6 +174,18 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+    private void eraseSegment(final float fromX, final float fromY, final float toX, final float toY) {
+        if (mReadyToDraw) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mBitmapCanvas.drawLine(fromX, fromY, toX, toY, mErasePaint);
+                    drawBitmapToSurfaceCanvas();
+                }
+            });
+        }
+    }
+
     private float normalizeCoordinate(float coordinate, float max) {
         if (coordinate < 0) {
             return mEtchPaint.getStrokeWidth() / 2f;
@@ -156,7 +197,6 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void fillBackground(final int color) {
-//        if (mHandlerThread.isAlive() && mReadyToDraw) {
         if (mReadyToDraw) {
             mHandler.post(new Runnable() {
                 @Override
@@ -171,8 +211,8 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     public void erasePartial(final int shakeCount) {
         if (shakeCount > FULL_ERASE_SHAKE_THRESHOLD) {
             fillBackground(mBackgroundColor);
+            mOnEraseFinishedListener.onEraseFinished();
         } else if (shakeCount > PARTIAL_ERASE_MIN_SHAKES) {
-//            if (mHandlerThread.isAlive() && mReadyToDraw) {
             if (mReadyToDraw) {
                 mHandler.post(new Runnable() {
                     @Override
@@ -228,14 +268,10 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void stopEtching() {
-//        mHandlerThread.quit();
         mReadyToDraw = false;
     }
 
     public void readyToEtch() {
-//        if (!mHandlerThread.isAlive()) {
-//            mHandlerThread.start();
-//        }
         if (mSurfaceReady) {
             mReadyToDraw = true;
         }
@@ -245,6 +281,22 @@ public class EtchView extends SurfaceView implements SurfaceHolder.Callback {
         Log.d(TAG, "restoreEtching: ");
         mBitmap = etching;
         drawBitmapToSurfaceCanvas();
+    }
+
+    public void setErasing(boolean erasing) {
+        mErasing = erasing;
+    }
+
+    public boolean isErasing() {
+        return mErasing;
+    }
+
+    public void setOnEraseFinishedListener(OnEraseFinishedListener listener) {
+        mOnEraseFinishedListener = listener;
+    }
+
+    public interface OnEraseFinishedListener {
+        void onEraseFinished();
     }
 
     //TODO: Remote display? https://developers.google.com/cast/docs/remote

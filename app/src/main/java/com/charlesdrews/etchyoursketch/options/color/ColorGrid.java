@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ColorGrid extends GridLayout {
 
-    private static final int DEFAULT_COLUMN_COUNT = 4;
+    private static final int DEFAULT_COLUMN_COUNT = 5;
     private static final int DEFAULT_HORIZ_PAD_DP = 20;
     private static final int DEFAULT_VERT_PAD_DP = 10;
 

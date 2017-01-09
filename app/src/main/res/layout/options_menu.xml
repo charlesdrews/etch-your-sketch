@@ -17,7 +17,7 @@
         android:layout_width="@dimen/menu_icon_size"
         android:layout_height="@dimen/menu_icon_size"
         android:contentDescription="@string/color_menu_title"
-        android:src="@drawable/palette"/>
+        android:src="@drawable/ic_palette"/>
 
     <android.support.v4.widget.Space
         android:layout_width="0dp"
@@ -29,7 +29,7 @@
         android:layout_width="@dimen/menu_icon_size"
         android:layout_height="@dimen/menu_icon_size"
         android:contentDescription="@string/weight_menu_title"
-        android:src="@drawable/line_weight"/>
+        android:src="@drawable/ic_line_weight"/>
 
     <android.support.v4.widget.Space
         android:layout_width="0dp"
@@ -41,7 +41,7 @@
         android:layout_width="@dimen/menu_icon_size"
         android:layout_height="@dimen/menu_icon_size"
         android:contentDescription="@string/erase_menu_title"
-        android:src="@drawable/eraser"/>
+        android:src="@drawable/ic_eraser"/>
 
     <android.support.v4.widget.Space
         android:layout_width="0dp"
@@ -53,7 +53,7 @@
         android:layout_width="@dimen/menu_icon_size"
         android:layout_height="@dimen/menu_icon_size"
         android:contentDescription="@string/save_menu_title"
-        android:src="@drawable/save"/>
+        android:src="@drawable/ic_save"/>
 
     <android.support.v4.widget.Space
         android:layout_width="0dp"
@@ -65,7 +65,7 @@
         android:layout_width="@dimen/menu_icon_size"
         android:layout_height="@dimen/menu_icon_size"
         android:contentDescription="@string/gallery_menu_title"
-        android:src="@drawable/gallery"/>
+        android:src="@drawable/ic_gallery"/>
 
     <android.support.v4.widget.Space
         android:layout_width="0dp"
@@ -77,7 +77,7 @@
         android:layout_width="@dimen/menu_icon_size"
         android:layout_height="@dimen/menu_icon_size"
         android:contentDescription="@string/share_menu_title"
-        android:src="@drawable/share"/>
+        android:src="@drawable/ic_share"/>
 
     <android.support.v4.widget.Space
         android:layout_width="0dp"
